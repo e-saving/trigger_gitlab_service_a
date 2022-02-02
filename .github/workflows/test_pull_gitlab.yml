@@ -30,17 +30,19 @@ jobs:
     steps:
       - name: Checkout from GitLab
         run: | 
-          git clone https://${{ secrets.GITLAB_USERNAME }}:${{ secrets.GITLAB_TOKEN }}@${{ env.GITLAB_REPO }}
-          ls -l
-          
-      - name: Generate new version
-        run: | 
+            git clone https://${{ secrets.GITLAB_USERNAME }}:${{ secrets.GITLAB_TOKEN }}@${{ env.GITLAB_REPO }}
             pwd
+            ls -l            
             cd ${{ env.GITLAB_HOME_PATH }}
             pwd
             ls -l
             git switch ${{ env.MANAGE_BRANCH }}
-            #git pull
+            
+          
+      - name: Generate new version
+        run: |
+            cd ${{ env.GITLAB_HOME_PATH }}
+            pwd
             cur_version=$(head -${{ env.POM_VERSION_LINE_NUMBER }} pom.xml|tail -1|grep -oPm1 "(?<=<version>)[^<]+")
             echo "cur_version=${cur_version}"
             major_version=$(echo ${cur_version}|awk -F'.' '{print($1)}')
@@ -71,8 +73,13 @@ jobs:
     steps:    
       - name: Checkout from GitLab
         run: | 
-          git clone https://${{ secrets.GITLAB_USERNAME }}:${{ secrets.GITLAB_TOKEN }}@${{ env.GITLAB_REPO }}
-          ls -l
+            git clone https://${{ secrets.GITLAB_USERNAME }}:${{ secrets.GITLAB_TOKEN }}@${{ env.GITLAB_REPO }}
+            pwd
+            ls -l            
+            cd ${{ env.GITLAB_HOME_PATH }}
+            pwd
+            ls -l
+            git switch ${{ env.MANAGE_BRANCH }}
           
       - name: Set up JDK 11
         uses: actions/setup-java@v2
@@ -87,9 +94,20 @@ jobs:
 
       - name: Check Current Version         
         run: |
+          pwd
+          ls -l
           cur_version=$(cat version/version.txt|grep 'CUR_VERSION'|awk -F'=' '{print($2)}')
           echo "Version is ${cur_version}"
           echo "VERSION_NO=${cur_version} " >> $GITHUB_ENV 
           mkdir -p badges
           
+      - name: Build with Maven
+        run: |
+            cd ${{ env.GITLAB_HOME_PATH }}
+            pwd
+            mvn package -Pcoverage
+            ls -l target
+            ls -l badges
+            ls -l target/site/jacoco/
       
+        
