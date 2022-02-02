@@ -20,6 +20,7 @@ env:
   CONTAINER_REGISTRY : gableesaving.azurecr.io
   CONTAINER_REPO: gableesaving.azurecr.io/api-demo-service-a
   GITLAB_REPO: git.g-able.com/ais-esaving/service-a.git
+  GITLAB_HOME_PATH: service-a
   POM_VERSION_LINE_NUMBER: 13
   
 jobs:
@@ -31,6 +32,9 @@ jobs:
         run: | 
           git clone https://${{ secrets.GITLAB_USERNAME }}:${{ secrets.GITLAB_TOKEN }}@${{ env.GITLAB_REPO }}
           ls -l
+          cd ${{ env.GITLAB_HOME_PATH }}
+          git switch master
+          git pull
           
       - name: Generate new version
         run: | 
