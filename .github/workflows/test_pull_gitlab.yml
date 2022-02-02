@@ -15,7 +15,7 @@ on:
   workflow_dispatch: 
   
 env:
-  MANAGE_BRANCH: master
+  MANAGE_BRANCH: main
   ARTIFACT_NAME: api-demo-service-a
   CONTAINER_REGISTRY : gableesaving.azurecr.io
   CONTAINER_REPO: gableesaving.azurecr.io/api-demo-service-a
@@ -32,27 +32,23 @@ jobs:
         run: | 
           git clone https://${{ secrets.GITLAB_USERNAME }}:${{ secrets.GITLAB_TOKEN }}@${{ env.GITLAB_REPO }}
           ls -l
-          cd ${{ env.GITLAB_HOME_PATH }}
-          pwd
-          ls -l
-          git switch main
-          git pull
           
       - name: Generate new version
         run: | 
             pwd
-            ls -a
-            #git pull
-            #git checkout master
-            #ls -l
-            #cur_version=$(head -${{ env.POM_VERSION_LINE_NUMBER }} pom.xml|tail -1|grep -oPm1 "(?<=<version>)[^<]+")
-            #echo "cur_version=${cur_version}"
-            #major_version=$(echo ${cur_version}|awk -F'.' '{print($1)}')
-            #minor_version=$(echo ${cur_version}|awk -F'.' '{print($2)}')
-            #build_version=$(echo ${cur_version}|awk -F'.' '{print($3)}')
-            #((new_build_version=build_version+1))
-            #new_version=${major_version}.${minor_version}.${new_build_version}
-            #echo "new_version=${new_version}"
+            cd ${{ env.GITLAB_HOME_PATH }}
+            pwd
+            ls -l
+            git switch ${{ env.MANAGE_BRANCH }}
+            git pull
+            cur_version=$(head -${{ env.POM_VERSION_LINE_NUMBER }} pom.xml|tail -1|grep -oPm1 "(?<=<version>)[^<]+")
+            echo "cur_version=${cur_version}"
+            major_version=$(echo ${cur_version}|awk -F'.' '{print($1)}')
+            minor_version=$(echo ${cur_version}|awk -F'.' '{print($2)}')
+            build_version=$(echo ${cur_version}|awk -F'.' '{print($3)}')
+            ((new_build_version=build_version+1))
+            new_version=${major_version}.${minor_version}.${new_build_version}
+            echo "new_version=${new_version}"
             #mkdir version
             #echo CUR_VERSION=${cur_version} > version/version.txt
             #echo NEW_VERSION=${new_version} >> version/version.txt
