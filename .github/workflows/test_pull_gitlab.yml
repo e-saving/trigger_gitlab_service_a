@@ -105,7 +105,8 @@ jobs:
         run: |
             cd ${{ env.GITLAB_HOME_PATH }}
             pwd
-            mvn package -Pcoverage
+            #mvn package -Pcoverage
+            mvn package
             ls -l target
             ls -l badges
             ls -l target/site/jacoco/
