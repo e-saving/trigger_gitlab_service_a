@@ -36,7 +36,7 @@ jobs:
           pwd
           ls -l
           git
-          #git checkout master
+          git switch master
           #git pull
           
       - name: Generate new version
