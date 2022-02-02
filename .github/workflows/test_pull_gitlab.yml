@@ -35,9 +35,8 @@ jobs:
           cd ${{ env.GITLAB_HOME_PATH }}
           pwd
           ls -l
-          #git
-          git switch master
-          #git pull
+          git switch main
+          git pull
           
       - name: Generate new version
         run: | 
