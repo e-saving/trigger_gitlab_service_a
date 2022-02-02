@@ -33,7 +33,8 @@ jobs:
           git clone https://${{ secrets.GITLAB_USERNAME }}:${{ secrets.GITLAB_TOKEN }}@${{ env.GITLAB_REPO }}
           ls -l
           cd ${{ env.GITLAB_HOME_PATH }}
-          git switch master
+          ls -l
+          git checkout master
           git pull
           
       - name: Generate new version
