@@ -60,6 +60,6 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: version          
-          path: version
+          path: ${{ env.GITLAB_HOME_PATH}}/version
           
 
