@@ -15,13 +15,13 @@ on:
   workflow_dispatch: 
   
 env:
-  MANAGE_BRANCH: main
-  ARTIFACT_NAME: api-demo-service-a
-  CONTAINER_REGISTRY : gableesaving.azurecr.io
-  CONTAINER_REPO: gableesaving.azurecr.io/api-demo-service-a
+  MANAGE_BRANCH: main  
   GITLAB_REPO: git.g-able.com/ais-esaving/service-a.git
   GITLAB_HOME_PATH: service-a
   POM_VERSION_LINE_NUMBER: 13
+  ARTIFACT_NAME: api-demo-service-a
+  CONTAINER_REGISTRY : gableesaving.azurecr.io
+  CONTAINER_REPO: gableesaving.azurecr.io/api-demo-service-a
   
 jobs:
   generate-version:
@@ -49,17 +49,17 @@ jobs:
             ((new_build_version=build_version+1))
             new_version=${major_version}.${minor_version}.${new_build_version}
             echo "new_version=${new_version}"
-            #mkdir version
-            #echo CUR_VERSION=${cur_version} > version/version.txt
-            #echo NEW_VERSION=${new_version} >> version/version.txt
-            #sed -i ${{ env.POM_VERSION_LINE_NUMBER }}"s/<version>${cur_version}<\/version>/<version>${new_version}<\/version>/" pom.xml  
-            #cp pom.xml version/
+            mkdir version
+            echo CUR_VERSION=${cur_version} > version/version.txt
+            echo NEW_VERSION=${new_version} >> version/version.txt
+            sed -i ${{ env.POM_VERSION_LINE_NUMBER }}"s/<version>${cur_version}<\/version>/<version>${new_version}<\/version>/" pom.xml  
+            cp pom.xml version/
             
             
-      #- name: Upload version artifact
-      #  uses: actions/upload-artifact@v1
-      #  with:
-      #    name: version          
-      #    path: version
+      - name: Upload version artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: version          
+          path: version
           
 
