@@ -39,8 +39,11 @@ jobs:
           
       - name: Generate new version
         run: | 
-            git checkout master
-            ls -l
+            pwd
+            ls -a
+            git pull
+            #git checkout master
+            #ls -l
             #cur_version=$(head -${{ env.POM_VERSION_LINE_NUMBER }} pom.xml|tail -1|grep -oPm1 "(?<=<version>)[^<]+")
             #echo "cur_version=${cur_version}"
             #major_version=$(echo ${cur_version}|awk -F'.' '{print($1)}')
