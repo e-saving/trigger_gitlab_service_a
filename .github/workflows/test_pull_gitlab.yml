@@ -98,17 +98,49 @@ jobs:
           ls -l
           cur_version=$(cat version/version.txt|grep 'CUR_VERSION'|awk -F'=' '{print($2)}')
           echo "Version is ${cur_version}"
-          echo "VERSION_NO=${cur_version} " >> $GITHUB_ENV 
-          mkdir -p badges
+          echo "VERSION_NO=${cur_version} " >> $GITHUB_ENV  
           
       - name: Build with Maven
         run: |
-            cd ${{ env.GITLAB_HOME_PATH }}
+            cd ${{ env.GITLAB_HOME_PATH }}            
             pwd
+            mkdir -p badges
             #mvn package -Pcoverage
             mvn package
             ls -l target
-            ls -l badges
-            ls -l target/site/jacoco/
+            #ls -l badges
+            #ls -l target/site/jacoco/
       
-        
+      - name: Log in to ACR
+        uses: azure/docker-login@v1
+        with:
+            login-server: ${{ env.CONTAINER_REGISTRY }}          
+            username: ${{ secrets.ACR_USERNAME }}
+            password: ${{ secrets.ACR_PASSWORD }}
+
+      - name: Build and Push Container Image    
+        run: |
+            cd ${{ env.GITLAB_HOME_PATH }}            
+            pwd
+            ls -l
+            docker build . -t ${{ env.CONTAINER_REPO }}:${{ env.VERSION_NO }} 
+            docker push ${{ env.CONTAINER_REPO }}:${{ env.VERSION_NO }}  
+            
+          
+      - name: Run the Anchore scan action itself with GitHub Advanced Security code scanning integration enabled
+        uses: anchore/scan-action@b08527d5ae7f7dc76f9621edb6e49eaf47933ccd
+        with:
+          image: "${{ env.CONTAINER_REPO }}:${{ env.VERSION_NO }}"
+          # Generate a SARIF report and set the `sarif` output parameter after successful action execution.  This report is compatible with GitHub Automated Code Scanning (ACS), as the artifact to upload for display as a Code Scanning Alert report.
+          acs-report-enable: true
+          # Set this to any value to enable verbose debug output
+          #debug: # optional, default is false
+          # Set to false to avoid failing based on severity-cutoff. Default is to fail when severity-cutoff is reached (or surpassed)
+          fail-build: false # optional, default is true      
+          # Optionally specify the minimum vulnerability severity to trigger an "error" level ACS result.  Valid choices are "negligible", "low", "medium", "high" and "critical".  Any vulnerability with a severity less than this value will lead to a "warning" result.  Default is "medium".
+          severity-cutoff: critical # optional, default is medium
+
+      - name: Upload Anchore Scan Report
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+          sarif_file: results.sarif        
