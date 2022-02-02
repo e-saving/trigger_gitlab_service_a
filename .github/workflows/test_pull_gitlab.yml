@@ -33,7 +33,9 @@ jobs:
           git clone https://${{ secrets.GITLAB_USERNAME }}:${{ secrets.GITLAB_TOKEN }}@${{ env.GITLAB_REPO }}
           ls -l
           cd ${{ env.GITLAB_HOME_PATH }}
+          pwd
           ls -l
+          git
           #git checkout master
           #git pull
           
@@ -41,7 +43,7 @@ jobs:
         run: | 
             pwd
             ls -a
-            git pull
+            #git pull
             #git checkout master
             #ls -l
             #cur_version=$(head -${{ env.POM_VERSION_LINE_NUMBER }} pom.xml|tail -1|grep -oPm1 "(?<=<version>)[^<]+")
