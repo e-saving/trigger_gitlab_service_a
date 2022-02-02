@@ -35,7 +35,7 @@ jobs:
           cd ${{ env.GITLAB_HOME_PATH }}
           pwd
           ls -l
-          git
+          #git
           git switch master
           #git pull
           
