@@ -111,6 +111,15 @@ jobs:
             #ls -l badges
             #ls -l target/site/jacoco/
       
+      
+      - name: Static Analysis Security Test
+        run: |
+            cd ${{ env.GITLAB_HOME_PATH }}            
+            pwd
+            mvn sonar:sonar -Dsonar.projectKey=esaving -Dsonar.host.url=http://bm-webapp-sonarqube.azurewebsites.net -Dsonar.login=6bede3c69463ce70b8b0c3a6a05c5c706eadac34
+            
+            
+            
       - name: Log in to ACR
         uses: azure/docker-login@v1
         with:
